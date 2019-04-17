@@ -1,0 +1,22 @@
+{
+  "name": "webscraper",
+  "version": "0.0.1",
+  "description": "A scraper for weather",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nickkhall/node-webscraper.git"
+  },
+  "author": "Nick Hall",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nickkhall/node-webscraper/issues"
+  },
+  "homepage": "https://github.com/nickkhall/node-webscraper#readme",
+  "dependencies": {
+    "puppeteer": "^1.14.0"
+  }
+}
