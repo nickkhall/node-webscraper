@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer');
 
-// Scroll's the page down
+// Function to scroll the page down
 const autoScroll = async (page) => {
   await page.evaluate(async () => {
     await new Promise((resolve, reject) => {
@@ -21,7 +21,7 @@ const autoScroll = async (page) => {
 
 // Main function
 (async () => {
-  const url = 'myUrl';
+  const url = 'https://www.facebook.com/EvanAndrewsFox4/?__tn__=kC-R0.g&eid=ARDN79fN6w_zHXDjRJN3ftaXudlINLvUepQKOIDCol0dhnGsVRIbrAx9b3LXnIGa7R9y--p8BYckwR1C&hc_ref=ARR_dZ_Mwr_j9sVcAzxhwFFkJ3Qo26aEH_VZV8GrnV4UbSdvysIx_b656O0RkA6HhS8';
 
   // Open browser
   const browser = await puppeteer.launch({
@@ -44,21 +44,26 @@ const autoScroll = async (page) => {
   // Scroll down to the last few days of posts
   await autoScroll(page);
 
-  await page.evaluate(() => {
+  let yPosArr = await page.evaluate((arr) => {
     const posts = document.querySelectorAll('._4-u2, ._4-u8');
 
     for (let p = 0; p < posts.length; p++) {
       let post = posts[p];
 
       if (post.innerText.match(/hail/)) {
-        console.log('We got a match for hail: ', post);
+        const rect = post.getBoundingClientRect();
+        yPosArr.push(rect.top);
       }
     }
+  }, []);
 
-  });
+  console.log({ yPosArr });
 
   await page.waitFor(3000000);
 
   // Close browser
   await browser.close();
 })();
+
+
+// window.scrollBy(0, rect.top - 50);
