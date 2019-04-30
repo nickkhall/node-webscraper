@@ -44,26 +44,39 @@ const autoScroll = async (page) => {
   // Scroll down to the last few days of posts
   await autoScroll(page);
 
-  let yPosArr = await page.evaluate((arr) => {
+  await page.evaluate(() => {
     const posts = document.querySelectorAll('._4-u2, ._4-u8');
+    let postArr = [];
 
     for (let p = 0; p < posts.length; p++) {
       let post = posts[p];
 
       if (post.innerText.match(/hail/)) {
-        const rect = post.getBoundingClientRect();
-        yPosArr.push(rect.top);
+        const textElem = post.getElementsByClassName('text_exposed_root');
+
+        if (!!textElem.length) {
+          const elem = textElem[0];
+          const p = elem.getElementsByTagName('p')[0].innerText.replace(/\s?.{2,}\s?/, '');
+          const extendedP = elem.getElementsByClassName('text_exposed_show')[0].innerText;
+          const date = post.getElementsByClassName('timestampContent');
+          if (date && !!date.length && date[0].innerText.match(/\shrs/g)) {
+            date[0].innerText += ' ago';
+          }
+
+          if (!postArr.find(p => p.id === elem.id)) {
+            postArr.push({
+              id: elem.id,
+              text: p + ' ' + extendedP,
+              date: (date && !!date.length) ? date[0].innerText : 'Date Not Available'
+            });
+          }
+        }
       }
     }
-  }, []);
-
-  console.log({ yPosArr });
+  });
 
   await page.waitFor(3000000);
 
   // Close browser
   await browser.close();
 })();
-
-
-// window.scrollBy(0, rect.top - 50);
